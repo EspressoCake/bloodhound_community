@@ -10,6 +10,7 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"text/template"
 	"time"
@@ -57,7 +58,13 @@ func execute(cmd *cobra.Command, args []string) {
 		path = currentPath
 	}
 
-	createPathAndGenerateConfigurations(filepath.Join(path, fmt.Sprintf("neo4j-inst-%s", strings.ToLower(name))), strings.ToLower(name))
+	match, _ := regexp.MatchString("^[a-z0-9]+$", strings.ToLower(name))
+	if match {
+		createPathAndGenerateConfigurations(filepath.Join(path, fmt.Sprintf("neo4j-inst-%s", strings.ToLower(name))), strings.ToLower(name))
+	} else {
+		log.Fatal("path does not conform to appropriate regex")
+	}
+
 }
 
 func createPathAndGenerateConfigurations(path string, name string) {
